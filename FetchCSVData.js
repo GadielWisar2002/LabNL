@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'; // Import Axios
+import Papa from 'papaparse';
 
 export default function FetchCSVData(props) {
     const [csvData, setCsvData] = useState([]);
@@ -22,7 +23,7 @@ export default function FetchCSVData(props) {
             });
     }
 
-    function parseCSV(csvText) {
+    /* function parseCSV(csvText) {
         const rows = csvText.split(/\r?\n/);        // Use a regular expression to split the CSV text into rows while handling '\r'
         const headers = rows[0].split(',');        // Extract headers (assumes the first row is the header row)
         const data = [];        // Initialize an array to store the parsed data
@@ -34,7 +35,17 @@ export default function FetchCSVData(props) {
             }
             data.push(rowObject);
         }
-        return data;
+        return data; */
+
+
+
+        function parseCSV(csvText) {
+            const results = Papa.parse(csvText, { header: true });
+            if (results.errors.length > 0) {
+                console.error('Error parsing CSV data:', results.errors);
+                return [];
+            }
+            return results.data;
     }
     return { csvData, fetchCSVData };
 }
